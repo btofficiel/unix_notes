@@ -180,3 +180,81 @@ Unit files end with a suffix related to the type of unit.
 For example, some end with **.service**, **.timer** etc.
 
 All unit files have a **[Unit]** section. Other sections like **[Service]** depend on the type of unit.
+
+##### systemctl
+**systemctl** is an all-purpose command for investigating the status of systemd and
+making changes to its configuration.
+
+To change the
+system’s current operating mode, use the systemctl isolate command:
+
+<pre>
+sudo systemctl isolate multi-user.target
+</pre>
+
+To see the target the system boots into by default, run the get-default subcommand:
+<pre>
+systemctl get-default
+</pre>
+Most Linux distributions boot to graphical.target by default, which isn’t appropri-
+ate for servers that don’t need a GUI. But that’s easily changed:
+<pre>
+sudo systemctl set-default multi-user.target
+</pre>
+To see all the system’s available targets, run systemctl list-units:
+<pre>
+systemctl list-units --type=target
+</pre>
+
+#### systemd logging
+**systemd** alleviates this problem with a universal logging framework that includes all
+kernel and service messages from early boot to final shutdown. This facility, called
+the journal, is managed by the **journald** daemon.
+
+These are stored in the **/run** directory and can be accessed via **journalctl** command.
+
+### Reboot and Shutdown procedures
+The **halt** command performs the essential duties required for shutting down the sys-
+tem. halt logs the shutdown, kills nonessential processes, flushes cached filesystem
+blocks to disk, and then halts the kernel. On most systems, halt -p powers down
+the system as a final flourish.
+
+**reboot** is essentially identical to halt, but it causes the machine to reboot instead
+of halting.
+
+The **shutdown** command is a layer over halt and reboot that provides for sched-
+uled shutdowns and ominous warnings to logged-in users. It dates back to the
+days of time-sharing systems and is now largely obsolete. shutdown does nothing
+of technical value beyond halt or reboot, so feel free to ignore it if you don’t have
+multiuser systems.
+
+
+## Chapter 3
+
+### Filesystem access control
+
+The owner of a file is always a single person, many people can be group
+owners of the file, as long as they are all part of a single group. Groups are tradi-
+tionally defined in the **/etc/group** file
+
+You can determine the ownership of a file by running the following command.
+<pre>
+ls -l <i>filename</i>
+</pre>
+
+You'll see two names upon running the above command. The first one is the user and the second one the group.
+
+The letters and dashes represent the permissions on the file.
+
+Both the kernel and the filesystem track owners and groups as numbers rather than
+as text names. In the most basic case, user identification numbers (UIDs for short)
+are mapped to usernames in the **/etc/passwd** file, and group identification num-
+bers (GIDs) are mapped to group names in **/etc/group**.
+
+### The root account
+The root account is UNIX’s omnipotent administrative user. It’s also known as the
+superuser account, although the actual username is “root”.
+
+By default the UID of root account is 0. Assigning this UID to other users is a bad practice.
+
+
